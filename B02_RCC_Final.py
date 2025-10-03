@@ -6,6 +6,7 @@ from datetime import date
 
 # Functions
 
+
 def make_statement(statement, decoration):
     """Emphasises headings by adding decoration
     at the start and end"""
@@ -132,20 +133,20 @@ def get_amount_and_unit(question):
 
         number = float(match.group(1))  # Convert the quantity to float
 
-        units = match.group(2).lower()  # Convert the unit to lowercase
+        unit = match.group(2).lower()  # Convert the unit to lowercase
 
         # Checks if the quantity is positive.
         if number <= 0:
             print("❌ Please enter a number higher than 0.")
             continue
 
-        # Checks if the unit is in the Units dictionary.
-        if units not in Units:
+        # Checks if the unit is in the Units dictionary (means that if it is a valid unit).
+        if unit not in unit_dictionary:
             print("❌ Invalid unit! Valid units include"
                   " weight classes(kg, g) and volume classes(l, ml, tsp, tbsp, cups)")
             continue
 
-        return number, units
+        return number, unit
     # Return None statement to avoid a light warning due to some IDE issues
     return None
 
@@ -155,14 +156,14 @@ def are_units_compatible(u1, u2):
 
     # Checks if both the units have the same base unit
     # returns boolean value True if they do.
-    return Units[u1][0] == Units[u2][0]
+    return unit_dictionary[u1][0] == unit_dictionary[u2][0]
 
 def convert_amount(quantity, u1, u2):
     """Converts amount between compatible units"""
 
     # Takes the factor of both the units.
-    factor_1 = Units[u1][1]
-    factor_2 = Units[u2][1]
+    factor_1 = unit_dictionary[u1][1]
+    factor_2 = unit_dictionary[u2][1]
 
     # Convert bought amount into the same unit as used amount
     # It calculates this by multiplying the bought quantity
@@ -190,8 +191,8 @@ def clean_filename(filename):
         filename = f"Recipe_Cost_Calculator_{day}_{month}_{year}"
 
     # Iterates over the filename for individual characters
-    # Checks if the filename contains any illegal characters.
     for letter in filename:
+        # Checks if the filename contains any illegal characters.
         if letter.isalnum() is False and letter != "_":
             # If filename contains special characters defaults to standard format.
             filename = f"Recipe_Cost_Calculator_{day}_{month}_{year}"
@@ -205,7 +206,7 @@ def clean_filename(filename):
 
 # Initializing the Units
 
-Units = {
+unit_dictionary = {
     # No unit
     None: ("none", 1),
 
@@ -220,6 +221,7 @@ Units = {
     "tbsp": ("ml", 15), "tablespoon": ("ml", 15), "tablespoons": ("ml", 15),
     "cup": ("ml", 250), "cups": ("ml", 250),
 }
+
 
 # Program heading
 print(make_statement("Recipe Cost Calculator", "🥝"))
@@ -278,26 +280,27 @@ while True:
         all_names.append(name)
 
         # asks for the Amount used
-        amount, unit = get_amount_and_unit("Amount Used: ")
+        amount_used, unit_used = get_amount_and_unit("Amount Used: ")
 
         # asks for the Amount bought
         converted_amt = None # defining converted amount outside the loop.
 
         while True:
-            bought_amt, bought_unit = get_amount_and_unit("Amount Bought: ")
+            amount_bought, unit_bought = get_amount_and_unit("Amount Bought: ")
 
-            # Checks if the units of both amounts are compatible with each other
-            if not are_units_compatible(unit, bought_unit):
+            # Checks if the units
+            # of both amounts are compatible with each other
+            if not are_units_compatible(unit_used, unit_bought):
                 print(f"❌ The Units are not compatible"
-                      f", please use units with the base unit [{Units[unit][0]}]")
+                      f", please use units with the base unit [{unit_dictionary[unit_used][0]}]")
                 continue
 
             # converts the amount bought according to the unit of the amount used.
             # so that the cost to make can be calculated correctly.
-            converted_amt = convert_amount(bought_amt, bought_unit, unit)
+            converted_amt = convert_amount(amount_bought, unit_bought, unit_used)
 
             # checks if the bought amount is less than the amount used
-            if converted_amt < amount:
+            if converted_amt < amount_used:
                 print("❌ The Amount bought can not be less than the Amount Used!")
                 continue
             break
@@ -307,11 +310,11 @@ while True:
         print()
 
         # Calculate cost to make
-        cost_to_make = price * (amount / converted_amt)
+        cost_to_make = price * (amount_used / converted_amt)
 
         # Store data
-        all_amounts.append(f"{amount}{unit or ''}") # if the Unit is None, it will be stored as blank
-        all_amounts_bought.append(f"{bought_amt}{bought_unit or ''}")
+        all_amounts.append(f"{amount_used}{unit_used or ''}") # if the Unit is None, it will be stored as blank
+        all_amounts_bought.append(f"{amount_bought}{unit_bought or ''}")
         all_prices.append(currency(price))
         all_costs.append(currency(cost_to_make))
         all_costs_raw.append(cost_to_make)
