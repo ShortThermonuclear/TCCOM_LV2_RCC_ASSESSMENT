@@ -135,7 +135,7 @@ def get_amount_and_unit(question):
             continue
 
         # Checks if the unit is in the Units dictionary.
-        if units not in Units:
+        if units not in units_dict:
             print("❌ Invalid unit! Valid units include"
                   " weight classes(kg, g) and volume classes(l, ml, tsp, tbsp, cups)")
             continue
@@ -149,7 +149,7 @@ def are_units_compatible(u1, u2):
     """Checks if units are compatible"""
 
     # Returns true if both the units have the same base unit.
-    return Units[u1][0] == Units[u2][0]
+    return units_dict[u1][0] == units_dict[u2][0]
 
 
 def convert_amount(quantity, u1, u2):
@@ -159,8 +159,8 @@ def convert_amount(quantity, u1, u2):
         return quantity
 
     # Takes the factor of both the units.
-    factor_1 = Units[u1][1]
-    factor_2 = Units[u2][1]
+    factor_1 = units_dict[u1][1]
+    factor_2 = units_dict[u2][1]
 
     # Calculates the converted quantity.
     converted_quantity = quantity * factor_1 / factor_2
@@ -173,7 +173,7 @@ def currency(x):
 
 
 # Initializing the Units
-Units = {
+units_dict = {
     # No unit
     None: ("none", 1),
 
@@ -249,7 +249,7 @@ while True:
         # Checks if the units of both amounts are compatible with each other
         if not are_units_compatible(unit, bought_unit):
             print(f"❌ The Units are not compatible"
-                  f", please use units with the base unit [{Units[unit][0]}]")
+                  f", please use units with the base unit [{units_dict[unit][0]}]")
             continue
 
         # converts the amount bought according to the unit of the amount used.
