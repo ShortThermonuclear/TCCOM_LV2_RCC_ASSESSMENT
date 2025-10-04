@@ -32,7 +32,7 @@ def yes_no_check(question):
 def instructions():
     """Displays instructions"""
 
-    print(make_statement("Instructions", "ℹ️"))
+    print(make_statement("Instructions", "ℹ️")) # Instruction heading for aesthetics.
 
     print('''This program will ask you for...
     - The name of the recipe
@@ -117,15 +117,19 @@ def get_amount_and_unit(question):
 
         # Checks for simple integer with no Unit (e.g. 4 (eggs) or 10 (grapes))
         if response.isdigit():
+
             # Checks if the integer is equal to 0
             if int(response) == 0:
                 print("❌ Please enter an integer greater than 0.")
                 continue
+
+            # return the Integer and the unit as None to the program.
             return int(response), None
 
         # Checks for Quantity with unit (e.g. 100g, 25.5 millilitres or 3 tablespoons)
         # Uses Regex to separate the number and the unit.
         match = re.fullmatch(r"([0-9]*\.?[0-9]+)\s*([a-zA-Z]+)", response)
+
         # Checks if the input matches the pattern
         if not match:
             print("❌ Please enter a valid input! (e.g. 100kg, 20 millilitres or just 4.)")
@@ -141,11 +145,12 @@ def get_amount_and_unit(question):
             continue
 
         # Checks if the unit is in the Units dictionary (means that if it is a valid unit).
-        if unit not in unit_dictionary:
+        if unit not in units_dict:
             print("❌ Invalid unit! Valid units include"
                   " weight classes(kg, g) and volume classes(l, ml, tsp, tbsp, cups)")
             continue
 
+        # return the number and the unit.
         return number, unit
     # Return None statement to avoid a light warning due to some IDE issues
     return None
@@ -156,14 +161,15 @@ def are_units_compatible(u1, u2):
 
     # Checks if both the units have the same base unit
     # returns boolean value True if they do.
-    return unit_dictionary[u1][0] == unit_dictionary[u2][0]
+    return units_dict[u1][0] == units_dict[u2][0]
+
 
 def convert_amount(quantity, u1, u2):
     """Converts amount between compatible units"""
 
     # Takes the factor of both the units.
-    factor_1 = unit_dictionary[u1][1]
-    factor_2 = unit_dictionary[u2][1]
+    factor_1 = units_dict[u1][1]
+    factor_2 = units_dict[u2][1]
 
     # Convert bought amount into the same unit as used amount
     # It calculates this by multiplying the bought quantity
@@ -171,6 +177,7 @@ def convert_amount(quantity, u1, u2):
     # then it is divided by the factor 2 to get the converted amount
     converted_quantity = quantity * factor_1 / factor_2
 
+    # Returns the converted amount
     return converted_quantity
 
 
@@ -179,7 +186,7 @@ def currency(x):
     return "${:.2f}".format(x)
 
 
-def clean_filename(filename):
+def valid_filename(filename):
     """Checks if filename has illegal characters and is not too long"""
 
     # Replaces the spaces in the filename to underscores
@@ -199,6 +206,7 @@ def clean_filename(filename):
         else:
             return filename
 
+    # returns the original filename if it is valid.
     return filename
 
 
@@ -206,7 +214,7 @@ def clean_filename(filename):
 
 # Initializing the Units
 
-unit_dictionary = {
+units_dict = {
     # No unit
     None: ("none", 1),
 
@@ -250,7 +258,7 @@ while True:
     all_costs = []
     all_costs_raw = []
 
-    # Recipe Dictionary
+    # Recipe Dictionary for pandas.
     recipe_dict = {
         'Ingredient Name': all_names,
         'Amount Used': all_amounts,
@@ -292,7 +300,7 @@ while True:
             # of both amounts are compatible with each other
             if not are_units_compatible(unit_used, unit_bought):
                 print(f"❌ The Units are not compatible"
-                      f", please use units with the base unit [{unit_dictionary[unit_used][0]}]")
+                      f", please use units with the base unit [ {units_dict[unit_used][0]} ]")
                 continue
 
             # converts the amount bought according to the unit of the amount used.
@@ -381,11 +389,11 @@ while True:
         ]
 
         # checks if the recipe name has no illegal characters or is not too long
-        safe_filename = clean_filename(recipe_name)
+        # if the recipe name is valid, it will be chosen as the filename.
+        safe_filename = valid_filename(recipe_name)
 
-        file_name = f"{safe_filename}"
-        write_to = "{}.txt".format(file_name)
-
+        # Writes to file
+        write_to = "{}.txt".format(safe_filename)
         text_file = open(write_to, "w+", encoding = "utf-8" )
 
         # write the item to file
@@ -395,6 +403,7 @@ while True:
             text_file.flush() # Allow multiple files to be written in one run.
             os.fsync(text_file.fileno()) # Makes sure the file is saved to disk.
 
+        # Confirmation of file save along with the chosen filename.
         print(f"The Filename is {safe_filename} and has been saved.")
 
 
