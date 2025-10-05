@@ -32,7 +32,7 @@ def get_amount_and_units(question):
             continue
 
         # Checks if the unit is in the Units dictionary.
-        if units not in Units:
+        if units not in units_dict:
             print("❌ Invalid unit! Valid units include"
                   " weight classes(kg, g) and volume classes(l, ml)")
             continue
@@ -61,7 +61,7 @@ def convert_amount(amount, from_unit, to_unit):
     return None
 
 # Initializing the Units
-Units = {
+units_dict = {
     "grams":"g", "gram":"g", "g":"g",
     "kilograms":"kg", "kilogram":"kg", "kg":"kg",
     "millilitres":"ml", "millilitre":"ml", "ml":"ml",
@@ -93,5 +93,5 @@ while True:
         while True:
             converted_amount = convert_amount(amount_bought, unit_bought, unit_used)
 
-            print(f"The amount used is {amount_used} {Units[unit_used]} and the amount bought is {converted_amount} {Units[unit_used]}. ")
+            print(f"The amount used is {amount_used} {units_dict[unit_used]} and the amount bought is {converted_amount} {units_dict[unit_used]}. ")
             break
