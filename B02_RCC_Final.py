@@ -56,9 +56,10 @@ total cost to make per serving.
 
 The program will then ask if you want to write the information to file
 which basically means that it will print the output to note document.
+⚠️ If your Recipe Name contains any special characters or has more than 30 characters, 
+the name of the file will be defaulted to Recipe_Cost_Calculator_dd_mm_yyyy.
 
 At the end, the program will ask if you want to return to the start of the program.
-
 
 ''')
 
@@ -162,7 +163,6 @@ def are_units_compatible(u1, u2):
     # Checks if both the units have the same base unit
     # returns boolean value True if they do.
     return units_dict[u1][0] == units_dict[u2][0]
-
 
 def convert_amount(quantity, u1, u2):
     """Converts amount between compatible units"""
@@ -321,7 +321,8 @@ while True:
         cost_to_make = price * (amount_used / converted_amt)
 
         # Store data
-        all_amounts.append(f"{amount_used}{unit_used or ''}") # if the Unit is None, it will be stored as blank
+        # if the Unit is None, it will be stored as blank
+        all_amounts.append(f"{amount_used}{unit_used or ''}")
         all_amounts_bought.append(f"{amount_bought}{unit_bought or ''}")
         all_prices.append(currency(price))
         all_costs.append(currency(cost_to_make))
