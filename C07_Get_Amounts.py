@@ -32,7 +32,7 @@ def get_amount_and_units(question):
             continue
 
         # Checks if the unit is in the Units dictionary.
-        if units not in Units:
+        if units not in units_dict:
             print("❌ Invalid unit! Valid units include"
                   " weight classes(kg, g) and volume classes(l, ml)")
             continue
@@ -43,7 +43,7 @@ def get_amount_and_units(question):
 
 # Initializing the Units
 
-Units = {
+units_dict = {
     "grams":"g", "gram":"g", "g":"g",
     "kilograms":"kg", "kilogram":"kg", "kg":"kg",
     "millilitres":"ml", "millilitre":"ml", "ml":"ml",
