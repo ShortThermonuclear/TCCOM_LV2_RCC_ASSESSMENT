@@ -1,10 +1,11 @@
-import re# Functions
+import re
+# Functions
 
 def unit_compatibility(u1, u2):
     """Checks if units are compatible"""
 
     # Returns true if both the units have the same base unit.
-    return Units[u1][0] == Units[u2][0]
+    return units_dict[u1][0] == units_dict[u2][0]
 
 
 def convert_amount(quantity, u1, u2):
@@ -14,8 +15,8 @@ def convert_amount(quantity, u1, u2):
         return quantity
 
     # Takes the factor of both the units.
-    factor_1 = Units[u1][1]
-    factor_2 = Units[u2][1]
+    factor_1 = units_dict[u1][1]
+    factor_2 = units_dict[u2][1]
 
     # Calculates the converted quantity.
     converted_quantity = quantity * factor_1 / factor_2
@@ -46,7 +47,7 @@ def get_amount_and_unit(question):
 
         number = float(match.group(1)) # Convert the quantity to float
 
-        units = match.group(2).lower() # Convert the unit to lowercase
+        unit = match.group(2).lower() # Convert the unit to lowercase
 
         # Checks if the quantity is positive.
         if number <= 0:
@@ -54,16 +55,16 @@ def get_amount_and_unit(question):
             continue
 
         # Checks if the unit is in the Units dictionary.
-        if units not in Units:
+        if unit not in units_dict:
             print("❌ Invalid unit! Valid units include"
                   " weight classes(kg, g) and volume classes(l, ml)")
             continue
 
-        return number, units
+        return number, unit
     # Return None statement to avoid a light warning due to some IDE issues
     return None
 
-Units = {
+units_dict = {
     # No unit
     None:("none",1),
 
@@ -74,9 +75,9 @@ Units = {
     # Volume
     "ml": ("ml", 1), "milliliter": ("ml", 1), "milliliters": ("ml", 1),
     "l": ("ml", 1000), "liter": ("ml", 1000), "liters": ("ml", 1000),
-    "tsp": ("volume", 5), "teaspoon": ("volume", 5), "teaspoons": ("volume", 5),
-    "tbsp": ("volume", 15), "tablespoon": ("volume", 15), "tablespoons": ("volume", 15),
-    "cup": ("volume", 240), "cups": ("volume", 240),
+    "tsp": ("ml", 5), "teaspoon": ("ml", 5), "teaspoons": ("ml", 5),
+    "tbsp": ("ml", 15), "tablespoon": ("ml", 15), "tablespoons": ("ml", 15),
+    "cup": ("ml", 250), "cups": ("ml", 250),
 
 }
 
@@ -92,7 +93,9 @@ while True:
             continue
         converted_amount = convert_amount(amount_bought, unit_bought, unit_used)
 
-        print(f"The amount used is {amount_used} {Units[unit_used]}"
-              f" and the amount bought is {converted_amount} {Units[unit_used]}. ")
-    break
+        print(f"The amount used is {amount_used} {unit_used}"
+              f" and the amount bought is {converted_amount} {unit_used}. ")
+
+        break
+
 
